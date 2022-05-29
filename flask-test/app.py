@@ -4,6 +4,12 @@ from flask import Flask, jsonify, request
 import os
 import requests
 
+# 追記
+from selenium import webdriver
+import time
+
+from selenium.webdriver.chrome.options import Options
+from selenium.webdriver.common.by import By
 
 app = Flask(__name__)
 
@@ -42,10 +48,18 @@ def hello_world():
     else:
         result2 = res2.json()["errorMessage"]
     
-    return jsonify({'message': 'Hello world !!!!!!!!',
-                    "GMO" : res2.status_code,
-                    "あおぞらGMO Hackasonのデータ" : result2
-                    })
+    # return jsonify({'message': 'Hello world !!!!!!!!',
+                    # "GMO" : res2.status_code,
+                    # "あおぞらGMO Hackasonのデータ" : result2
+                    # })
+    options = Options()
+    options.add_argument('--headless')
+    driver = webdriver.Chrome(options=options)
+    driver.get('https://info.finance.yahoo.co.jp/fx/')
+    usd_jpy = driver.find_element(By.ID, 'USDJPY_top_bid').text
+    driver.quit()
+    return usd_jpy
+
 
 db_data = [
     {'title': 'タイトル1', 'body': '本文one'},
